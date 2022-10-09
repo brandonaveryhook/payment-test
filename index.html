@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
 
     <link rel="stylesheet" href="./style.css">
-    <script src="./script.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -37,7 +36,7 @@
                                 <div class="col-xs-12">
                                     <div class="form-group"> <label>EMAIL</label>
                                         <div class="input-group">
-                                            <input type="email" class="form-control" placeholder="Email Address" />
+                                            <input id="email-input" type="email" class="form-control" placeholder="Email Address" />
                                             <span class="input-group-addon">
                                                 <span class="fa fa-envelope"></span>
                                             </span>
@@ -68,7 +67,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <div class="form-group"> <label>NAME ON CARD</label> <input type="text" class="form-control" placeholder="Card Owner Name" /> </div>
+                                    <div class="form-group"> <label>NAME ON CARD</label> <input id="name-input" type="text" class="form-control" placeholder="Card Owner Name" /> </div>
                                 </div>
                             </div>
                         </form>
@@ -99,5 +98,48 @@
             </div>
         </div>
     </div>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-app.js";
+        import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/9.11.0/firebase-firestore.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyAjO7L3ieocLLADOrWK1-VidBGhlME04b0",
+          authDomain: "payment-test-fa948.firebaseapp.com",
+          projectId: "payment-test-fa948",
+          storageBucket: "payment-test-fa948.appspot.com",
+          messagingSenderId: "510829703357",
+          appId: "1:510829703357:web:0527628b967f616e9347d4"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Initialize Cloud Firestore and get a reference to the service
+        const db = getFirestore(app);
+
+        const paymentBtn = document.getElementById("payment-btn");
+
+        paymentBtn.addEventListener("click", async function() {
+            document.getElementById("payment-panel").hidden = true;
+            document.getElementById("message-panel").hidden = false;
+
+            const name = document.getElementById("name-input").value;
+            const email = document.getElementById("email-input").value;
+
+            try {
+                const docRef = await addDoc(collection(db, "emails"), {
+                    email,
+                    name,
+                });
+                console.log("Document written with ID: ", docRef.id);
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
+        });
+    </script>
 </body>
 </html>
